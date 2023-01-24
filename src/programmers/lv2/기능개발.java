@@ -1,7 +1,6 @@
 package programmers.lv2;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class 기능개발 {
     public static void main(String[] args) {
@@ -10,33 +9,37 @@ public class 기능개발 {
 
 //        int[] progresses = {93, 30, 55};
 //        int[] speeds = {1, 30, 5};
-        solution(progresses, speeds);
+        List<Integer> r = solution(progresses, speeds);
+        System.out.println(r);
     }
 
-    public static int[] solution(int[] progresses, int[] speeds) {
+    public static List<Integer> solution(int[] progresses, int[] speeds) {
         List<Integer> days = new ArrayList<>();
         for (int i = 0; i < progresses.length; i++) {
             int remain = 100 - progresses[i];
-            int doneDays = (int) Math.ceil(remain / speeds[i]);
+            int doneDays = (int) Math.ceil((double) remain / speeds[i]);
             days.add(doneDays);
         }
-        System.out.println(days);
-//        int i = 0;
-//        while (i < days.size()) {
-//            int count = 1;
-//            for (int j = i + 1; j < days.size() - 1; j++) {
-//                if (days.get(j) >= days.get(j + 1)) {
-//                    count++;
-//                    i++;
-//                } else {
-//                    i = j;
-//                    break;
-//                }
-//            }
-//            System.out.println(count);
-//        }
-        int[] answer = {};
-        return answer;
+        // 이전 작업 끝나는 시각 vs. 내 작업 끝나는 시각
+        int finish = days.get(0);
+        List<Integer> copy = new ArrayList<>(days);
+        for (int i = 1 ; i<days.size(); i++) {
+            if (finish >= days.get(i)) {
+                copy.remove(i);
+                copy.add(i, finish);
+            }
+            else finish = days.get(i);
+        }
+        System.out.println("남은 날 수 " + days);
+        System.out.println("계산된 날 수 " + copy);
+
+        Set<Integer> keys = new TreeSet<>(copy);
+        List<Integer> result = new ArrayList<>();
+        for (int key : keys) {
+            long count = copy.stream().filter(it -> it.equals(key)).count();
+            result.add((int) count);
+        }
+        return result;
     }
 
 }
